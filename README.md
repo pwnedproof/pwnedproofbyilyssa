@@ -6,8 +6,7 @@ This is a static website hosted on [GitHub Pages] and demonstrates a secure, beg
 
 ## 🌐 Live Site
 You can visit the website here:  
-[[https://pwnedproof.github.io](https://pwnedproof.github.io/pwnedproofbyilyssa/)]([https://pwnedproof.github.io](https://pwnedproof.github.io/pwnedproofbyilyssa/))
-
+[[https://pwnedproof.github.io](https://pwnedproof.github.io/pwnedproofbyilyssa/)]
 ## 🖥️ Programming Languages
 - **HTML** – Structure of the website  
 - **CSS** – Styling and layout  
