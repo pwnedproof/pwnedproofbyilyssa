@@ -2,7 +2,7 @@
 
 Welcome to the **Pwned Proof Website**, created by **Ilyssa**! 🎉
 
-This is a static website hosted on [GitHub Pages](https://pwnedproof.github.io) and demonstrates a secure, beginner-friendly HTML setup.
+This is a static website hosted on [GitHub Pages](and demonstrates a secure, beginner-friendly HTML setup.
 
 ## 🌐 Live Site
 You can visit the website here:  
