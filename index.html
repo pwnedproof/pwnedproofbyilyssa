@@ -1,0 +1,1438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PwnedProof by Ilyssa</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000000;
+            color: #ffffff;
+            font-family: 'Courier New', monospace;
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.7;
+        }
+
+        .login-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            background: #000000;
+        }
+
+        .asterisk-container {
+            margin-bottom: 50px;
+            animation: rotate 20s linear infinite;
+            filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.4));
+        }
+
+        .asterisk-svg {
+            width: 220px;
+            height: 220px;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .login-box {
+            background: rgba(20, 20, 20, 0.95);
+            border: 1px solid #333333;
+            padding: 60px;
+            border-radius: 4px;
+            box-shadow: 0 10px 60px rgba(255, 255, 255, 0.05);
+            text-align: center;
+            max-width: 550px;
+            width: 100%;
+        }
+
+        .site-header {
+            font-size: 13px;
+            color: #888888;
+            margin-bottom: 15px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+
+        .site-title {
+            font-size: 56px;
+            font-weight: 900;
+            margin-bottom: 15px;
+            color: #ffffff;
+            letter-spacing: 8px;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+        }
+
+        .site-author {
+            font-size: 14px;
+            color: #666666;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+            font-style: italic;
+        }
+
+        .warning-text {
+            font-size: 16px;
+            margin-bottom: 40px;
+            line-height: 1.8;
+            color: #cccccc;
+            letter-spacing: 1px;
+        }
+
+        .decrypt-input {
+            width: 100%;
+            padding: 18px;
+            background: #0a0a0a;
+            border: 1px solid #333333;
+            color: #ffffff;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            margin-bottom: 25px;
+            border-radius: 2px;
+            transition: all 0.3s;
+        }
+
+        .decrypt-input:focus {
+            outline: none;
+            border-color: #ffffff;
+            box-shadow: 0 0 0 1px #ffffff;
+            background: #111111;
+        }
+
+        .decrypt-btn {
+            width: 100%;
+            padding: 18px;
+            background: #ffffff;
+            border: none;
+            color: #000000;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 2px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            transition: all 0.3s;
+        }
+
+        .decrypt-btn:hover {
+            background: #eeeeee;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
+        }
+
+        .hint {
+            margin-top: 25px;
+            font-size: 13px;
+            color: #666666;
+            font-style: italic;
+            letter-spacing: 1px;
+        }
+
+        .dashboard {
+            display: none;
+            background: #000000;
+            min-height: 100vh;
+        }
+
+        .loading-screen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000000;
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .loading-text {
+            font-size: 24px;
+            color: #ffffff;
+            letter-spacing: 4px;
+            margin-bottom: 30px;
+            animation: pulse-text 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse-text {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .loading-bar-container {
+            width: 400px;
+            height: 4px;
+            background: #1a1a1a;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .loading-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #ffffff, #888888);
+            animation: load 2s ease-in-out forwards;
+        }
+
+        @keyframes load {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        .disclaimer {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(10, 10, 10, 0.95);
+            border: 1px solid #333333;
+            padding: 20px;
+            border-radius: 4px;
+            max-width: 350px;
+            font-size: 12px;
+            color: #cccccc;
+            line-height: 1.6;
+            z-index: 1000;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+        }
+
+        .disclaimer-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .close-disclaimer {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            cursor: pointer;
+            color: #888888;
+            font-size: 20px;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+
+        .close-disclaimer:hover {
+            color: #ffffff;
+        }
+
+        .top-bar {
+            background: #0a0a0a;
+            padding: 25px 50px;
+            border-bottom: 1px solid #1a1a1a;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 25px;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background: #111111;
+            padding: 14px 24px;
+            border-radius: 3px;
+            flex: 1;
+            max-width: 600px;
+            border: 1px solid #222222;
+        }
+
+        .search-icon {
+            width: 12px;
+            height: 12px;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            margin-right: 15px;
+        }
+
+        .site-url {
+            font-size: 15px;
+            color: #ffffff;
+            font-weight: 600;
+            letter-spacing: 2px;
+        }
+
+        .site-url-author {
+            font-size: 12px;
+            color: #666666;
+            margin-left: 10px;
+            font-style: italic;
+        }
+
+        .status-badges {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            padding: 10px 18px;
+            background: #1a1a1a;
+            color: #ffffff;
+            border-radius: 2px;
+            font-size: 11px;
+            letter-spacing: 2px;
+            font-weight: 600;
+            border: 1px solid #2a2a2a;
+        }
+
+        nav {
+            background: #0a0a0a;
+            border-bottom: 1px solid #1a1a1a;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
+
+        nav::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        nav::-webkit-scrollbar-track {
+            background: #000000;
+        }
+
+        nav::-webkit-scrollbar-thumb {
+            background: #333333;
+            border-radius: 3px;
+        }
+
+        .nav-wrapper {
+            display: inline-flex;
+            min-width: 100%;
+        }
+
+        .nav-item {
+            padding: 22px 30px;
+            cursor: pointer;
+            font-weight: 500;
+            letter-spacing: 2px;
+            color: #888888;
+            border-right: 1px solid #1a1a1a;
+            transition: all 0.3s;
+            background: #0a0a0a;
+            font-size: 13px;
+            text-transform: uppercase;
+            white-space: nowrap;
+            display: inline-block;
+        }
+
+        .nav-item:last-child {
+            border-right: none;
+        }
+
+        .nav-item:hover {
+            background: #111111;
+            color: #ffffff;
+        }
+
+        .nav-item.active {
+            background: #1a1a1a;
+            color: #ffffff;
+            border-bottom: 2px solid #ffffff;
+        }
+
+        .content {
+            padding: 60px 40px;
+            max-width: 1600px;
+            margin: 0 auto;
+            background: #000000;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .section-header {
+            font-size: 52px;
+            font-weight: 900;
+            margin-bottom: 60px;
+            text-align: center;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            color: #ffffff;
+            padding: 50px 20px;
+            position: relative;
+            text-shadow: 0 2px 10px rgba(255, 255, 255, 0.1);
+        }
+
+        .section-header::after {
+            content: '';
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #ffffff, transparent);
+        }
+
+        .countdown {
+            background: #0a0a0a;
+            padding: 45px;
+            border-radius: 4px;
+            margin-bottom: 50px;
+            text-align: center;
+            border: 1px solid #1a1a1a;
+            box-shadow: 0 10px 40px rgba(255, 255, 255, 0.03);
+        }
+
+        .countdown-title {
+            font-size: 18px;
+            margin-bottom: 25px;
+            letter-spacing: 4px;
+            color: #888888;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .timer {
+            font-size: 56px;
+            font-weight: 900;
+            color: #ffffff;
+            letter-spacing: 8px;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+        }
+
+        .legend {
+            background: #0a0a0a;
+            padding: 40px;
+            border-radius: 4px;
+            margin-bottom: 50px;
+            border: 1px solid #1a1a1a;
+        }
+
+        .legend-title {
+            font-size: 24px;
+            margin-bottom: 30px;
+            letter-spacing: 4px;
+            color: #ffffff;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .legend-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+            color: #cccccc;
+            padding: 15px;
+            background: #111111;
+            border-radius: 2px;
+            border-left: 3px solid #ffffff;
+            letter-spacing: 1px;
+        }
+
+        .legend-arrow {
+            color: #888888;
+            font-weight: bold;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .card {
+            background: linear-gradient(135deg, #0a0a0a 0%, #050505 100%);
+            padding: 45px;
+            border-radius: 6px;
+            border: 1px solid #1a1a1a;
+            transition: all 0.4s ease;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #ffffff, transparent);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 50px rgba(255, 255, 255, 0.08);
+            border-color: #2a2a2a;
+            background: linear-gradient(135deg, #0f0f0f 0%, #0a0a0a 100%);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card-title {
+            font-size: 26px;
+            margin-bottom: 18px;
+            letter-spacing: 1.5px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.4;
+        }
+
+        .card-subtitle {
+            font-size: 14px;
+            color: #999999;
+            margin-bottom: 25px;
+            letter-spacing: 1px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .card-content {
+            font-size: 16px;
+            line-height: 1.9;
+            color: #d0d0d0;
+            letter-spacing: 0.3px;
+        }
+
+        .card-content strong {
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        .card-content a {
+            color: #ffffff;
+            text-decoration: none;
+            border-bottom: 1px solid #ffffff;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .card-content a:hover {
+            opacity: 0.7;
+        }
+
+        .expandable {
+            cursor: pointer;
+        }
+
+        .expandable::after {
+            content: '[ CLICK TO EXPAND ]';
+            display: block;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #666666;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+
+        .expand-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+        }
+
+        .expand-content.open {
+            max-height: 2000px;
+        }
+
+        .expand-items {
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px solid #1a1a1a;
+        }
+
+        .expand-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            padding-left: 25px;
+            border-left: 2px solid #ffffff;
+            background: #111111;
+        }
+
+        .expand-item-title {
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            font-size: 14px;
+        }
+
+        .map-container {
+            background: #0a0a0a;
+            padding: 50px;
+            border-radius: 4px;
+            margin-bottom: 50px;
+            border: 1px solid #1a1a1a;
+        }
+
+        .map-title {
+            font-size: 20px;
+            margin-bottom: 40px;
+            text-align: center;
+            letter-spacing: 4px;
+            color: #ffffff;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .map-svg {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            display: block;
+        }
+
+        .scan-line {
+            animation: scan 3s linear infinite;
+        }
+
+        @keyframes scan {
+            0%, 100% { opacity: 0; transform: translateY(0); }
+            50% { opacity: 1; transform: translateY(200px); }
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .contact-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            padding: 25px;
+            background: #0a0a0a;
+            border: 1px solid #1a1a1a;
+            border-radius: 2px;
+            text-decoration: none;
+            color: #ffffff;
+            transition: all 0.3s;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-size: 13px;
+        }
+
+        .contact-link:hover {
+            background: #111111;
+            transform: translateY(-5px);
+            border-color: #2a2a2a;
+            box-shadow: 0 10px 40px rgba(255, 255, 255, 0.05);
+        }
+
+        @media (max-width: 768px) {
+            .section-header {
+                font-size: 32px;
+                letter-spacing: 3px;
+                padding: 30px 15px;
+            }
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+            .nav-item {
+                padding: 18px 24px;
+                font-size: 12px;
+            }
+            .search-bar {
+                max-width: 100%;
+            }
+            .top-bar {
+                padding: 20px 25px;
+            }
+            .content {
+                padding: 30px 20px;
+            }
+            .timer {
+                font-size: 42px;
+            }
+            .card {
+                padding: 30px;
+            }
+            .card-title {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-screen" id="loginScreen">
+        <div class="asterisk-container">
+            <svg class="asterisk-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="100" cy="100" r="8" fill="#ffffff">
+                    <animate attributeName="r" values="8;10;8" dur="2s" repeatCount="indefinite"/>
+                </circle>
+                
+                <line x1="100" y1="100" x2="100" y2="30" stroke="#ffffff" stroke-width="4" stroke-linecap="round">
+                    <animate attributeName="opacity" values="1;0.5;1" dur="1.5s" begin="0s" repeatCount="indefinite"/>
+                </line>
+                <line x1="100" y1="100" x2="150" y2="50" stroke="#ffffff" stroke-width="4" stroke-linecap="round">
+                    <animate attributeName="opacity" values="1;0.5;1" dur="1.5s" begin="0.2s" repeatCount="indefinite"/>
+                </line>
+                <line x1="100" y1="100" x2="170" y2="100" stroke="#ffffff" stroke-width="4" stroke-linecap="round">
+                    <animate attributeName="opacity" values="1;0.5;1" dur="1.5s" begin="0.4s" repeatCount="indefinite"/>
+                </line>
+                <line x1="100" y1="100" x2="150" y2="150" stroke="#ffffff" stroke-width="4" stroke-linecap="round">
+                    <animate attributeName="opacity" values="1;0.5;1" dur="1.5s" begin="0.6s" repeatCount="indefinite"/>
+                </line>
+                <line x1="100" y1="100" x2="100" y2="170" stroke="#ffffff" stroke-width="4" stroke-linecap="round">
+                    <animate attributeName="opacity" values="1;0.5;1" dur="1.5s" begin="0.8s" repeatCount="indefinite"/>
+                </line>
+                <line x1="100" y1="100" x2="50" y2="150" stroke="#ffffff" stroke-width="4" stroke-linecap="round">
+                    <animate attributeName="opacity" values="1;0.5;1" dur="1.5s" begin="1s" repeatCount="indefinite"/>
+                </line>
+                <line x1="100" y1="100" x2="30" y2="100" stroke="#ffffff" stroke-width="4" stroke-linecap="round">
+                    <animate attributeName="opacity" values="1;0.5;1" dur="1.5s" begin="1.2s" repeatCount="indefinite"/>
+                </line>
+                <line x1="100" y1="100" x2="50" y2="50" stroke="#ffffff" stroke-width="4" stroke-linecap="round">
+                    <animate attributeName="opacity" values="1;0.5;1" dur="1.5s" begin="1.4s" repeatCount="indefinite"/>
+                </line>
+                
+                <circle cx="100" cy="30" r="4" fill="#ffffff" opacity="0.6"/>
+                <circle cx="150" cy="50" r="4" fill="#ffffff" opacity="0.6"/>
+                <circle cx="170" cy="100" r="4" fill="#ffffff" opacity="0.6"/>
+                <circle cx="150" cy="150" r="4" fill="#ffffff" opacity="0.6"/>
+                <circle cx="100" cy="170" r="4" fill="#ffffff" opacity="0.6"/>
+                <circle cx="50" cy="150" r="4" fill="#ffffff" opacity="0.6"/>
+                <circle cx="30" cy="100" r="4" fill="#ffffff" opacity="0.6"/>
+                <circle cx="50" cy="50" r="4" fill="#ffffff" opacity="0.6"/>
+                
+                <circle cx="100" cy="100" r="25" fill="none" stroke="#ffffff" stroke-width="1" opacity="0.3">
+                    <animate attributeName="r" values="25;30;25" dur="3s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="0.3;0.1;0.3" dur="3s" repeatCount="indefinite"/>
+                </circle>
+                
+                <circle cx="100" cy="100" r="60" fill="none" stroke="#ffffff" stroke-width="1" opacity="0.2">
+                    <animate attributeName="r" values="60;65;60" dur="4s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="0.2;0.05;0.2" dur="4s" repeatCount="indefinite"/>
+                </circle>
+            </svg>
+        </div>
+        <div class="login-box">
+            <div class="site-header">SECURE ACCESS PORTAL</div>
+            <div class="site-title">PWNED PROOF</div>
+            <div class="site-author">by Ilyssa Yap</div>
+            <div class="warning-text">
+                YOUR FILES HAVE BEEN ENCRYPTED<br>
+                ENTER DECRYPTION KEY TO ACCESS PORTFOLIO
+            </div>
+            <input type="password" class="decrypt-input" id="keyInput" placeholder="Enter decryption key..." autocomplete="off">
+            <button class="decrypt-btn" id="decryptBtn">DECRYPT FILES</button>
+            <div class="hint">HINT: The key is the name of this site</div>
+        </div>
+    </div>
+
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-text">SECURING TUNNEL CONNECTION</div>
+        <div class="loading-bar-container">
+            <div class="loading-bar"></div>
+        </div>
+    </div>
+
+    <div class="dashboard" id="dashboard">
+        <div class="top-bar">
+            <div class="search-bar">
+                <div class="search-icon"></div>
+                <span class="site-url">pwnedproof.tor</span>
+                <span class="site-url-author">by Ilyssa Yap</span>
+            </div>
+            <div class="status-badges">
+                <div class="badge">SECURE</div>
+                <div class="badge">ENCRYPTED</div>
+                <div class="badge">ANONYMOUS</div>
+            </div>
+        </div>
+
+        <nav>
+            <div class="nav-wrapper">
+                <div class="nav-item active" data-section="home">Home</div>
+                <div class="nav-item" data-section="vault">Encrypted Vault</div>
+                <div class="nav-item" data-section="credentials">Stolen Credentials</div>
+                <div class="nav-item" data-section="files">Leaked Files</div>
+                <div class="nav-item" data-section="exploits">Exploit Kit</div>
+                <div class="nav-item" data-section="breach">Breach Records</div>
+                <div class="nav-item" data-section="malware">Malware Variants</div>
+                <div class="nav-item" data-section="volunteer">Covert Operations</div>
+                <div class="nav-item" data-section="ransom">Pay Ransom</div>
+            </div>
+        </nav>
+
+        <div class="content">
+            <!-- HOME SECTION -->
+            <div class="section active" id="home">
+                <div class="section-header">WELCOME</div>
+                
+                <div class="countdown">
+                    <div class="countdown-title">TIME UNTIL DATA DELETION</div>
+                    <div class="timer" id="timer">47:59:58</div>
+                </div>
+
+                <div class="legend">
+                    <div class="legend-title">Portfolio Navigation</div>
+                    <div class="legend-items">
+                        <div class="legend-item">
+                            <span>Encrypted Vault</span>
+                            <span class="legend-arrow">→</span>
+                            <span>Academic Background</span>
+                        </div>
+                        <div class="legend-item">
+                            <span>Stolen Credentials</span>
+                            <span class="legend-arrow">→</span>
+                            <span>Professional Credentials</span>
+                        </div>
+                        <div class="legend-item">
+                            <span>Leaked Files</span>
+                            <span class="legend-arrow">→</span>
+                            <span>Published Articles</span>
+                        </div>
+                        <div class="legend-item">
+                            <span>Exploit Kit</span>
+                            <span class="legend-arrow">→</span>
+                            <span>GitHub Repositories</span>
+                        </div>
+                        <div class="legend-item">
+                            <span>Breach Records</span>
+                            <span class="legend-arrow">→</span>
+                            <span>Work History</span>
+                        </div>
+                        <div class="legend-item">
+                            <span>Malware Variants</span>
+                            <span class="legend-arrow">→</span>
+                            <span>Academic Contributions</span>
+                        </div>
+                        <div class="legend-item">
+                            <span>Covert Operations</span>
+                            <span class="legend-arrow">→</span>
+                            <span>Volunteer Work</span>
+                        </div>
+                        <div class="legend-item">
+                            <span>Pay Ransom</span>
+                            <span class="legend-arrow">→</span>
+                            <span>Get In Touch</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="map-container">
+                    <div class="map-title">THREAT ORIGIN: MALAYSIA</div>
+                    <svg class="map-svg" viewBox="0 0 600 400">
+                        <defs>
+                            <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                                <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#1a1a1a" stroke-width="0.5"/>
+                            </pattern>
+                        </defs>
+                        
+                        <rect width="600" height="400" fill="url(#grid)"/>
+                        
+                        <path d="M 250 150 L 280 155 L 290 165 L 305 170 L 320 165 L 335 170 L 345 180 L 350 195 L 345 210 L 335 220 L 320 225 L 305 220 L 295 210 L 285 205 L 275 200 L 265 190 L 255 175 L 250 160 Z" 
+                              fill="none" stroke="#ffffff" stroke-width="2">
+                            <animate attributeName="stroke-opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite"/>
+                        </path>
+                        
+                        <line class="scan-line" x1="0" y1="0" x2="600" y2="0" stroke="#ffffff" stroke-width="1" opacity="0.5"/>
+                        
+                        <circle cx="300" cy="185" r="6" fill="#ffffff" opacity="0.8">
+                            <animate attributeName="r" values="6;12;6" dur="1.5s" repeatCount="indefinite"/>
+                            <animate attributeName="opacity" values="0.8;0.2;0.8" dur="1.5s" repeatCount="indefinite"/>
+                        </circle>
+                        
+                        <text x="300" y="250" font-family="Courier New" font-size="13" fill="#ffffff" text-anchor="middle" font-weight="600" letter-spacing="2">
+                            KUALA LUMPUR
+                        </text>
+                    </svg>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">About The Operator</div>
+                    <div class="card-content">
+                        Hi, I'm Ilyssa Yap, a cybersecurity enthusiast and aspiring professional from Malaysia, currently pursuing my undergraduate studies in Cybersecurity at Purdue University in West Lafayette. I'm deeply involved in the cybersecurity community as the founder of PwnedProof and a community manager at Nearshore Cyber, and I contribute to research as an undergraduate assistant focusing on Industrial Control Systems (ICS) penetration testing and deepfakes.
+                        <br><br>
+                        I hold ISC² Certified in Cybersecurity and Microsoft SC-900 certifications, and my work focuses on penetration testing, incident response, and threat intelligence. I'm passionate about developing innovative solutions that have a real-world impact and building a strong portfolio of practical, hands-on cybersecurity projects.
+                        <br><br>
+                        I am fluent in English, Chinese, Cantonese, and Malay at a native level, and have elementary proficiency in French and Russian. I am open to opportunities that require relocation and any collaborative research projects.
+                        <br><br>
+                        Feel free to explore my work, and don't hesitate to connect or collaborate—I'm always excited to share insights and take on new challenges in the cybersecurity field.
+                    </div>
+                </div>
+            </div>
+
+            <!-- ENCRYPTED VAULT (Education) -->
+            <div class="section" id="vault">
+                <div class="section-header">ENCRYPTED VAULT</div>
+                <div class="card-grid">
+                    <div class="card">
+                        <div class="card-title">Bachelor of Science in Cybersecurity</div>
+                        <div class="card-subtitle">Purdue University | 2024-2028</div>
+                        <div class="card-content">
+                            Comprehensive curriculum covering network security, cryptography, ethical hacking, digital forensics, and security policy. Gaining hands-on experience through labs, capture-the-flag competitions, and real-world security projects.
+                            <br><br>
+                            <strong>Expected Graduation:</strong> May 2028
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">American Transfer Degree Program</div>
+                        <div class="card-subtitle">Sunway University | Aug 2023 - May 2025</div>
+                        <div class="card-content">
+                            Computer Science transfer program providing foundational coursework in programming, algorithms, data structures, and computer systems.
+                            <br><br>
+                            <strong>CGPA:</strong> 3.46
+                            <br><br>
+                            <strong>Honors & Leadership:</strong><br>
+                            • Magna Cum Laude Fall 2023<br>
+                            • Jeffery Cheah Entrance Scholarship Recipient<br>
+                            • School of American Education Student Council - Head of Creative Department<br>
+                            • President of Sunway Esports Club<br>
+                            <br>
+                            <strong>Achievements:</strong><br>
+                            • GIC UNHCR Student Challenge 2024 Semi-Finalist<br>
+                            • Cultural Event 2023 (Second Runner Up), 2024 (Winner)<br>
+                            • Emcee for School of American Education Graduation<br>
+                            • Global Partner Event Student Volunteer<br>
+                            • ASEAN Workshop on Sustainable Development Registration & Delegate Management 2025 Volunteer
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">High School Diploma (IGCSE)</div>
+                        <div class="card-subtitle">HELP International School | Feb 2016 - Jun 2023</div>
+                        <div class="card-content">
+                            <strong>Leadership & Activities:</strong><br>
+                            • Student Council Member<br>
+                            • Prefect Board Member<br>
+                            • School Ambassador<br>
+                            • Photography Club Member & Social Media Manager<br>
+                            • Dragon House Graphic Designer<br>
+                            <br>
+                            <strong>Competitions & Achievements:</strong><br>
+                            • F1 in Schools Finalist<br>
+                            • UN Eco Startup Finalist<br>
+                            • Public Speaking Semi-Finalist<br>
+                            • STEAM Week Participant<br>
+                            • Sports Day Medalist<br>
+                            <br>
+                            <strong>Additional Involvement:</strong><br>
+                            • Baseball Team Member<br>
+                            • Music Performer<br>
+                            • School-Wide Event Planning, Coordinating, and Management<br>
+                            • Career's Week Presenter and Emcee
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STOLEN CREDENTIALS (Certifications) -->
+            <div class="section" id="credentials">
+                <div class="section-header">STOLEN CREDENTIALS</div>
+                <div class="card-grid">
+                    <div class="card expandable">
+                        <div class="card-title">Certified in Cybersecurity</div>
+                        <div class="card-subtitle">ISC² CC | Active</div>
+                        <div class="card-content">
+                            Entry-level certification demonstrating foundational cybersecurity knowledge across core security principles, business continuity, access controls, and network security.
+                        </div>
+                        <div class="expand-content">
+                            <div class="expand-items">
+                                <div class="expand-item">
+                                    <div class="expand-item-title">Security Principles</div>
+                                    CIA Triad, Authentication, Authorization, Non-repudiation
+                                </div>
+                                <div class="expand-item">
+                                    <div class="expand-item-title">Business Continuity</div>
+                                    Disaster Recovery Planning, Incident Response Procedures
+                                </div>
+                                <div class="expand-item">
+                                    <div class="expand-item-title">Access Controls</div>
+                                    Physical & Logical Controls, IAM, Multi-Factor Authentication
+                                </div>
+                                <div class="expand-item">
+                                    <div class="expand-item-title">Network Security</div>
+                                    Firewalls, IDS/IPS, Network Architecture, Protocols
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card expandable">
+                        <div class="card-title">Security, Compliance, and Identity Fundamentals</div>
+                        <div class="card-subtitle">Microsoft SC-900 | Verified</div>
+                        <div class="card-content">
+                            Foundational certification covering Microsoft security, compliance, and identity solutions across cloud and hybrid environments.
+                        </div>
+                        <div class="expand-content">
+                            <div class="expand-items">
+                                <div class="expand-item">
+                                    <div class="expand-item-title">Security Concepts</div>
+                                    Shared Responsibility Model, Defense in Depth, Zero Trust
+                                </div>
+                                <div class="expand-item">
+                                    <div class="expand-item-title">Identity & Access Management</div>
+                                    Azure AD, Single Sign-On, MFA, Conditional Access Policies
+                                </div>
+                                <div class="expand-item">
+                                    <div class="expand-item-title">Threat Protection</div>
+                                    Microsoft Defender Suite, Azure Sentinel, Security Center
+                                </div>
+                                <div class="expand-item">
+                                    <div class="expand-item-title">Compliance Management</div>
+                                    Compliance Manager, Data Governance, Privacy Management
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LEAKED FILES (Blog Posts) -->
+            <div class="section" id="files">
+                <div class="section-header">LEAKED FILES</div>
+                <div class="card-grid">
+                    <div class="card">
+                        <div class="card-title">Introduction to OSINT Capstone Challenge</div>
+                        <div class="card-subtitle">Security Blue Team Certification | Published</div>
+                        <div class="card-content">
+                            Comprehensive OSINT investigation demonstrating advanced intelligence gathering techniques, social media analysis, and digital footprint tracking for cybersecurity purposes. Completed as capstone task for Security Blue Team's Introduction to OSINT certification, showcasing practical application of open-source intelligence methodologies.
+                            <br><br>
+                            <a href="https://medium.com/@pwnedproof/security-blue-team-introduction-to-osint-capstone-challenge-0a74d10f896f" target="_blank">Read on Medium</a>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">Introduction to the Dark Web Capstone Challenge</div>
+                        <div class="card-subtitle">Security Blue Team Certification | Published</div>
+                        <div class="card-content">
+                            Exploration of dark web infrastructure, anonymous communication protocols, and threat intelligence gathering from underground forums. Completed as capstone task for Security Blue Team's Introduction to the Dark Web certification, requiring navigation of Tor networks and information extraction from hidden services.
+                            <br><br>
+                            <a href="https://medium.com/@pwnedproof/security-blue-team-introduction-to-the-dark-web-capstone-challenge-a5f0755e3d40" target="_blank">Read on Medium</a>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">RangeForce: Website Defacement Incident Response</div>
+                        <div class="card-subtitle">Virtual Lab Walkthrough | Published</div>
+                        <div class="card-content">
+                            Comprehensive walkthrough of a virtual incident response lab exercise focusing on website defacement analysis and remediation. Utilizing Splunk Enterprise for log analysis and forensic investigation, this exercise demonstrates detection and mitigation of Drupalgeddon 2 vulnerability exploitation (CVE-2018-7600). Step-by-step guide covers identification, containment, and recovery procedures for web application compromise scenarios.
+                            <br><br>
+                            <a href="https://medium.com/@pwnedproof/rangeforce-incident-response-website-defacement-a805c5762c12" target="_blank">Read on Medium</a>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">Phishing Email Analysis</div>
+                        <div class="card-subtitle">Security Awareness | Published</div>
+                        <div class="card-content">
+                            Real-world analysis of a phishing email received in my inbox, walking through key characteristics that identify malicious intent. Provides practical tips on what to do if you encounter a phishing email, steps to take if you've already fallen victim, and best practices for prevention. Essential reading for both cybersecurity professionals and everyday users.
+                            <br><br>
+                            <a href="https://www.linkedin.com/posts/ilyssa-y-bb5a97282_phishing-email-analysis-activity-7339915945156481024-Tn2n" target="_blank">Read on LinkedIn</a>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">Ransomware on Critical Infrastructure: KLIA Attack</div>
+                        <div class="card-subtitle">Incident Analysis | Published</div>
+                        <div class="card-content">
+                            Deep-dive analysis of the ransomware attack that targeted Malaysia's primary international airport (KLIA). Examining the attack vectors, impact on critical infrastructure operations, and response strategies. Provides key takeaways for aviation sector cybersecurity and comprehensive security recommendations for protecting critical infrastructure against ransomware threats.
+                            <br><br>
+                            <a href="https://www.linkedin.com/posts/ilyssa-y-bb5a97282_a-deep-dive-into-the-incident-ugcPost-7310536542853165056-P-p8" target="_blank">Read on LinkedIn</a>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">CyberTech Tuesday Ep 1: VirusTotal Deep Dive</div>
+                        <div class="card-subtitle">Tutorial Series | Published</div>
+                        <div class="card-content">
+                            Comprehensive tutorial demonstrating practical usage of VirusTotal for malware analysis. Walkthrough includes uploading and analyzing a malicious Word document commonly found in phishing campaigns, exploring VirusTotal's features, and explaining how cybersecurity professionals and everyday consumers can leverage the platform for threat detection and file verification.
+                            <br><br>
+                            <a href="https://www.linkedin.com/posts/ilyssa-y-bb5a97282_a-deep-dive-into-the-incident-ugcPost-7310536542853165056-P-p8" target="_blank">Read on LinkedIn</a>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">CyberTech Tuesday Ep 2: Have I Been Pwned</div>
+                        <div class="card-subtitle">Tutorial Series | Published</div>
+                        <div class="card-content">
+                            In-depth exploration of the Have I Been Pwned platform, including tool overview, step-by-step walkthrough, and practical applications. Demonstrates how cybersecurity professionals can leverage breach data for threat intelligence and how everyday users can check if their credentials have been compromised in data breaches. Essential resource for proactive security monitoring.
+                            <br><br>
+                            <a href="https://www.linkedin.com/posts/ilyssa-y-bb5a97282_pwnedproof-cybertech-tuesday-02-have-i-activity-7340606540359286784-1vOE" target="_blank">Read on LinkedIn</a>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">Understanding Web Cookies</div>
+                        <div class="card-subtitle">Educational Article | Published</div>
+                        <div class="card-content">
+                            Comprehensive breakdown of web cookies technology, exploring different cookie types, their legitimate uses, and security implications. Detailed analysis of common cookie-based attacks including session hijacking, cross-site scripting (XSS), and cross-site request forgery (CSRF). Includes practical mitigation strategies and best practices for both developers and users to protect against cookie-based vulnerabilities.
+                            <br><br>
+                            <a href="https://www.linkedin.com/posts/ilyssa-y-bb5a97282_pwnedproof-understanding-web-cookies-activity-7333785340379381760-xtXP" target="_blank">Read on LinkedIn</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- EXPLOIT KIT (Projects) -->
+            <div class="section" id="exploits">
+                <div class="section-header">EXPLOIT KIT</div>
+                <div class="card-grid">
+                    <div class="card">
+                        <div class="card-title">Learning For All (LEFA)</div>
+                        <div class="card-subtitle">CIEE UNHCR Student Challenge | Dec 2023 - Apr 2024</div>
+                        <div class="card-content">
+                            <strong>Associated with Sunway University</strong>
+                            <br><br>
+                            Representing both Malaysia and Sunway University, our team – Ilyssa Yap Yumin, Tisyha Saravanan, Ng Ho Lam, and Varsheene Murugan – proudly achieved <strong>Top 36 out of 120 teams globally</strong> in the 2024 CIEE UNHCR Student Challenge focused on social innovation and sustainable development.
+                            <br><br>
+                            <strong>Project Goal:</strong> Empowering refugee youth through education by tackling key barriers to access and opportunity. Consulted refugee experts from Malaysia, Taiwan, Germany, and Canada. Aligned with UN SDGs 4, 8, 10, and 17.
+                            <br><br>
+                            <strong>Key Achievements:</strong><br>
+                            • Designed tech-driven solution and secured five sponsorships<br>
+                            • Built website mockup featuring aptitude testing, academic/vocational pathways, AI chatbot, and scholarship updates<br>
+                            • Pitched to judges achieving Top 36 global ranking<br>
+                            • Conducted discussion with Fugee School students, presenting their stories to Sunway University community<br>
+                            <br>
+                            <em>Supported by Dr Tze Ying Sim & Dr TamilSelvan Ramis</em>
+                            <br><br>
+                            <a href="https://www.canva.com/design/DAG21TjQPqk/nOHHufeybuMPYforMbos6Q/edit?utm_content=DAG21TjQPqk&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton" target="_blank">View Project Presentation</a>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">Password Strength Checker</div>
+                        <div class="card-subtitle">Security Tool | Python</div>
+                        <div class="card-content">
+                            Advanced password strength analyzer that checks passwords against common vulnerabilities, leaked databases, and provides comprehensive security recommendations with entropy calculations.
+                            <br><br>
+                            <a href="https://github.com/pwnedproof/PasswordChecker" target="_blank">View on GitHub</a>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">AIG Forage Job Simulation</div>
+                        <div class="card-subtitle">Virtual Experience Program | Python</div>
+                        <div class="card-content">
+                            <strong>Cyber Defense Unit Simulation</strong>
+                            <br><br>
+                            • Conducted comprehensive threat and vulnerability analysis for the Cyber Defense Unit, actively tracking CISA advisories (e.g., Log4j vulnerability) to evaluate organizational risks and propose prioritized remediation steps<br>
+                            • Produced clear, actionable documentation and communications (e.g., guidance emails) to direct teams on remediation strategies, patch prioritization, and incident response procedures<br>
+                            • Developed authorized Python tools to simulate ethical hacking scenarios, including controlled brute force testing against encrypted sample files, to assess password resilience and recommend mitigation controls
+                            <br><br>
+                            <a href="https://github.com/pwnedproof/Forage-AIG-Job-Simulation-bruteforcing-encrypted-passwords" target="_blank">View on GitHub</a>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">Mastercard Forage Job Simulation</div>
+                        <div class="card-subtitle">Virtual Experience Program | Security Awareness</div>
+                        <div class="card-content">
+                            <strong>Security Risk Management Simulation</strong>
+                            <br><br>
+                            • Supported security risk management activities by identifying and reporting threats such as phishing attacks and assessing areas of the business that required stronger security controls<br>
+                            • Crafted and analyzed simulated phishing emails to test team responses, identify vulnerabilities, and measure security awareness effectiveness<br>
+                            • Contributed to policy and training development by creating a comprehensive slide deck recommending security awareness courses and procedures for teams with identified security gaps
+                            <br><br>
+                            <a href="https://purdue0-my.sharepoint.com/:p:/g/personal/yap12_purdue_edu/EVYuwU1IF55Ou7XZYlUjyRYBDFpcSPgXB3yPH3lfOfKQig?e=m20mMo" target="_blank">View Project Documentation</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BREACH RECORDS (Experience) -->
+            <div class="section" id="breach">
+                <div class="section-header">BREACH RECORDS</div>
+                <div class="card expandable">
+                    <div class="card-title">Summer Security Intern</div>
+                    <div class="card-subtitle">UG Overseas Education | Aug 2024 - Sep 2024</div>
+                    <div class="card-content">
+                        • Created comprehensive cybersecurity architecture and framework for institution's Website as a Service (WaaS)<br>
+                        • Developed and implemented incident response plan for institution's WaaS platform<br>
+                        • Conducted security assessments and provided strategic recommendations for web infrastructure
+                    </div>
+                    <div class="expand-content">
+                        <div class="expand-items">
+                            <div class="map-container">
+                                <div class="map-title">OPERATION LOCATION: MALAYSIA</div>
+                                <svg class="map-svg" viewBox="0 0 600 400">
+                                    <defs>
+                                        <pattern id="grid2" width="20" height="20" patternUnits="userSpaceOnUse">
+                                            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#1a1a1a" stroke-width="0.5"/>
+                                        </pattern>
+                                    </defs>
+                                    
+                                    <rect width="600" height="400" fill="url(#grid2)"/>
+                                    
+                                    <path d="M 250 150 L 280 155 L 290 165 L 305 170 L 320 165 L 335 170 L 345 180 L 350 195 L 345 210 L 335 220 L 320 225 L 305 220 L 295 210 L 285 205 L 275 200 L 265 190 L 255 175 L 250 160 Z" 
+                                          fill="none" stroke="#ffffff" stroke-width="2">
+                                        <animate attributeName="stroke-opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite"/>
+                                    </path>
+                                    
+                                    <line class="scan-line" x1="0" y1="0" x2="600" y2="0" stroke="#ffffff" stroke-width="1" opacity="0.5"/>
+                                    
+                                    <circle cx="300" cy="185" r="6" fill="#ff0000" opacity="0.8">
+                                        <animate attributeName="r" values="6;12;6" dur="1.5s" repeatCount="indefinite"/>
+                                        <animate attributeName="opacity" values="0.8;0.2;0.8" dur="1.5s" repeatCount="indefinite"/>
+                                    </circle>
+                                    
+                                    <text x="300" y="250" font-family="Courier New" font-size="13" fill="#ffffff" text-anchor="middle" font-weight="600" letter-spacing="2">
+                                        KUALA LUMPUR
+                                    </text>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MALWARE VARIANTS (Research) -->
+            <div class="section" id="malware">
+                <div class="section-header">MALWARE VARIANTS</div>
+                <div class="card-grid">
+                    <div class="card expandable">
+                        <div class="card-title">Industrial Control Systems Penetration Testing</div>
+                        <div class="card-subtitle">Purdue University | Sep 2024 - Present | Ongoing</div>
+                        <div class="card-content">
+                            Conducting advanced cybersecurity research on penetration testing methodologies for Industrial Control Systems (ICS). Utilizing Kali Linux and specialized security tools to identify vulnerabilities in critical infrastructure systems.
+                        </div>
+                        <div class="expand-content">
+                            <div class="expand-items">
+                                <div class="expand-item">
+                                    <div class="expand-item-title">CYNICS Research Group</div>
+                                    Part of Purdue University's CYNICS (CYbersecurity for Nuclear and Industrial Control Systems) research laboratory
+                                </div>
+                                <div class="expand-item">
+                                    <div class="expand-item-title">Supervisors</div>
+                                    Dr. Arvind Sundaram, Dr. Hany Abdel Khalik
+                                </div>
+                                <div class="expand-item">
+                                    <div class="expand-item-title">Research Activities</div>
+                                    • Performed comprehensive literature review and analysis of penetration testing frameworks, with emphasis on Kali Linux utilities and ICS-specific attack vectors<br>
+                                    • Configured and deployed virtualized ICS laboratory environment (LabShock) for controlled security testing<br>
+                                    • Developed custom Python automation script to emulate realistic I/O operations and sensor output generation, enabling comprehensive testing scenarios without physical hardware dependencies<br>
+                                    • Documented security vulnerabilities and proposed mitigation strategies for industrial control environments
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card expandable">
+                        <div class="card-title">Real-Time Voice Deepfake Detection</div>
+                        <div class="card-subtitle">Independent Research | Ongoing</div>
+                        <div class="card-content">
+                            Developing detection methodologies for real-time voice deepfakes using OSINT techniques and acoustic wavelength analysis.
+                        </div>
+                        <div class="expand-content">
+                            <div class="expand-items">
+                                <div class="expand-item">
+                                    <div class="expand-item-title">Research Objective</div>
+                                    Creating open-source detection framework to combat voice-based social engineering attacks and misinformation campaigns
+                                </div>
+                                <div class="expand-item">
+                                    <div class="expand-item-title">Technical Implementation</div>
+                                    • Building custom Python web scraping tool to systematically collect and catalog deepfake voice services advertised on Telegram, GitHub, and other platforms<br>
+                                    • Multi-language data collection across English, Chinese, and Russian sources to understand global deepfake service landscape<br>
+                                    • Conducting extensive literature review on emerging threats posed by voice synthesis technology<br>
+                                    • Analyzing acoustic patterns and wavelength signatures to identify synthetic voice characteristics<br>
+                                    • Developing threat intelligence database of commercially available deepfake services
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COVERT OPERATIONS (Volunteering) -->
+            <div class="section" id="volunteer">
+                <div class="section-header">COVERT OPERATIONS</div>
+                <div class="card">
+                    <div class="card-title">Community Manager</div>
+                    <div class="card-subtitle">NearShore Cyber | Ongoing</div>
+                    <div class="card-content">
+                        <strong>Calling All Vibe Builders (CAVB):</strong><br>
+                        Co-hosting dynamic weekly events for a 2,000-member cybersecurity community. Curating and spotlighting innovative projects while fostering collaboration and knowledge-sharing among cybersecurity enthusiasts.
+                        <br><br>
+                        <strong>Backdoors and Breaches (APAC Region):</strong><br>
+                        Co-hosting interactive tabletop incident response game for the APAC region, utilizing real-life cybersecurity scenarios based on the Lockheed Martin Cyber Kill Chain framework. Consistently facilitating engaging sessions for at least 20 attendees per session, enhancing practical incident response skills through hands-on gameplay and strategic threat analysis.
+                        <br><br>
+                        <a href="https://www.nearshorecyber.com.mx" target="_blank">Visit NearShore Cyber Community</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAY RANSOM (Contact) -->
+            <div class="section" id="ransom">
+                <div class="section-header">PAY RANSOM</div>
+                
+                <div class="card">
+                    <div class="card-title">Request Official Resume</div>
+                    <div class="card-content" style="text-align: center; font-size: 18px; padding: 20px 0;">
+                        Please email <a href="mailto:ilyssayap@gmail.com" style="color: #ffffff; text-decoration: none; border-bottom: 2px solid #ffffff; font-weight: 700;">ilyssayap@gmail.com</a> for a copy of my official resume.
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top: 40px;">
+                    <div class="card-title">Get In Touch</div>
+                    <div class="card-subtitle">Connect on Social Platforms</div>
+                    
+                    <div class="card-content" style="margin-bottom: 25px;">
+                        <strong>Email Contacts:</strong><br>
+                        • <a href="mailto:ilyssayap@gmail.com" style="text-decoration: none; border-bottom: 1px solid #ffffff;">ilyssayap@gmail.com</a> - Professional Opportunities<br>
+                        • <a href="mailto:pwnedproof@gmail.com" style="text-decoration: none; border-bottom: 1px solid #ffffff;">pwnedproof@gmail.com</a> - PwnedProof Related Content
+                    </div>
+                    
+                    <div class="contact-grid">
+                        <a href="https://linktr.ee/pwnedproof" target="_blank" class="contact-link">
+                            <span>Linktree</span>
+                        </a>
+                        <a href="https://www.linkedin.com/in/ilyssa-y-bb5a97282/" target="_blank" class="contact-link">
+                            <span>LinkedIn</span>
+                        </a>
+                        <a href="https://github.com/pwnedproof" target="_blank" class="contact-link">
+                            <span>GitHub</span>
+                        </a>
+                        <a href="https://medium.com/@pwnedproof" target="_blank" class="contact-link">
+                            <span>Medium</span>
+                        </a>
+                        <a href="https://www.instagram.com/pwnedproof/" target="_blank" class="contact-link">
+                            <span>Instagram</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="disclaimer" id="disclaimer">
+        <span class="close-disclaimer" onclick="closeDisclaimer()">&times;</span>
+        <div class="disclaimer-title">⚠ LEGAL DISCLAIMER</div>
+        This is a creative portfolio website designed with a ransomware aesthetic for educational and professional purposes only. This site is NOT malicious in any way, shape, or form. All content represents legitimate cybersecurity work, research, and achievements. No actual encryption, data theft, or malicious activity occurs on this website. By continuing to browse, you acknowledge this is a professional portfolio showcasing cybersecurity skills and projects.
+    </div>
+
+    <script>
+        var countdownInterval;
+
+        function decrypt() {
+            var input = document.getElementById('keyInput');
+            if (input.value.length > 0) {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('loadingScreen').style.display = 'flex';
+                
+                setTimeout(function() {
+                    document.getElementById('loadingScreen').style.display = 'none';
+                    document.getElementById('dashboard').style.display = 'block';
+                    startCountdown();
+                }, 2000);
+            }
+        }
+
+        function closeDisclaimer() {
+            document.getElementById('disclaimer').style.display = 'none';
+        }
+
+        document.getElementById('decryptBtn').addEventListener('click', decrypt);
+
+        document.getElementById('keyInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                decrypt();
+            }
+        });
+
+        var navItems = document.querySelectorAll('.nav-item');
+        for (var i = 0; i < navItems.length; i++) {
+            navItems[i].addEventListener('click', function() {
+                var section = this.getAttribute('data-section');
+                showSection(section);
+            });
+        }
+
+        var expandables = document.querySelectorAll('.expandable');
+        for (var i = 0; i < expandables.length; i++) {
+            expandables[i].addEventListener('click', function() {
+                var content = this.querySelector('.expand-content');
+                if (content.classList.contains('open')) {
+                    content.classList.remove('open');
+                } else {
+                    content.classList.add('open');
+                }
+            });
+        }
+
+        function showSection(sectionId) {
+            var sections = document.querySelectorAll('.section');
+            for (var i = 0; i < sections.length; i++) {
+                sections[i].classList.remove('active');
+            }
+            
+            document.getElementById(sectionId).classList.add('active');
+            
+            var navItems = document.querySelectorAll('.nav-item');
+            for (var i = 0; i < navItems.length; i++) {
+                navItems[i].classList.remove('active');
+                if (navItems[i].getAttribute('data-section') === sectionId) {
+                    navItems[i].classList.add('active');
+                }
+            }
+        }
+
+        function startCountdown() {
+            var hours = 47;
+            var minutes = 59;
+            var seconds = 58;
+            
+            countdownInterval = setInterval(function() {
+                seconds--;
+                
+                if (seconds < 0) {
+                    seconds = 59;
+                    minutes--;
+                }
+                
+                if (minutes < 0) {
+                    minutes = 59;
+                    hours--;
+                }
+                
+                if (hours < 0) {
+                    clearInterval(countdownInterval);
+                    document.getElementById('timer').textContent = '00:00:00';
+                    return;
+                }
+                
+                var h = hours < 10 ? '0' + hours : hours;
+                var m = minutes < 10 ? '0' + minutes : minutes;
+                var s = seconds < 10 ? '0' + seconds : seconds;
+                
+                document.getElementById('timer').textContent = h + ':' + m + ':' + s;
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
