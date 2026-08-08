@@ -855,20 +855,36 @@
                         
                         <rect width="600" height="400" fill="url(#grid)"/>
                         
-                        <path d="M 250 150 L 280 155 L 290 165 L 305 170 L 320 165 L 335 170 L 345 180 L 350 195 L 345 210 L 335 220 L 320 225 L 305 220 L 295 210 L 285 205 L 275 200 L 265 190 L 255 175 L 250 160 Z" 
-                              fill="none" stroke="#ffffff" stroke-width="2">
+                        <!-- Langkawi island -->
+                        <circle cx="115" cy="128" r="2.5" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.7"/>
+                        
+                        <!-- Peninsular Malaysia (tilted NW-SE, as on the actual map) -->
+                        <path d="M 165 130 L 185 140 L 200 165 L 195 190 L 208 210 L 200 235 L 212 260 L 205 285 L 218 310 L 210 335 L 222 355 L 235 370 L 245 378 L 232 372 L 218 358 L 205 340 L 195 315 L 180 295 L 172 270 L 160 245 L 155 220 L 145 195 L 150 170 L 155 150 Z" 
+                              fill="none" stroke="#ffffff" stroke-width="2" stroke-linejoin="round">
                             <animate attributeName="stroke-opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite"/>
+                        </path>
+                        
+                        <!-- Sabah & Sarawak (East Malaysia, Borneo) -->
+                        <path d="M 330 330 L 355 310 L 380 295 L 400 285 L 420 270 L 440 255 L 455 235 L 465 215 L 475 190 L 480 175 L 486 168 L 490 180 L 490 195 L 500 205 L 510 200 L 520 210 L 535 215 L 548 220 L 555 228 L 548 235 L 538 232 L 525 250 L 515 270 L 505 290 L 490 300 L 470 310 L 450 305 L 430 315 L 410 308 L 390 315 L 370 308 L 350 318 Z" 
+                              fill="none" stroke="#ffffff" stroke-width="2" stroke-linejoin="round">
+                            <animate attributeName="stroke-opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite" begin="0.3s"/>
                         </path>
                         
                         <line class="scan-line" x1="0" y1="0" x2="600" y2="0" stroke="#ffffff" stroke-width="1" opacity="0.5"/>
                         
-                        <circle cx="300" cy="185" r="6" fill="#ffffff" opacity="0.8">
+                        <circle cx="190" cy="250" r="6" fill="#ffffff" opacity="0.8">
                             <animate attributeName="r" values="6;12;6" dur="1.5s" repeatCount="indefinite"/>
                             <animate attributeName="opacity" values="0.8;0.2;0.8" dur="1.5s" repeatCount="indefinite"/>
                         </circle>
                         
-                        <text x="300" y="250" font-family="Courier New" font-size="13" fill="#ffffff" text-anchor="middle" font-weight="600" letter-spacing="2">
+                        <text x="200" y="112" font-family="Courier New" font-size="10" fill="#888888" text-anchor="middle" font-weight="600" letter-spacing="1.5">
+                            PENINSULAR MALAYSIA
+                        </text>
+                        <text x="235" y="252" font-family="Courier New" font-size="12" fill="#ffffff" text-anchor="start" font-weight="600" letter-spacing="1.5">
                             KUALA LUMPUR
+                        </text>
+                        <text x="440" y="345" font-family="Courier New" font-size="10" fill="#888888" text-anchor="middle" font-weight="600" letter-spacing="1.5">
+                            SABAH &amp; SARAWAK
                         </text>
                     </svg>
                 </div>
@@ -1188,6 +1204,26 @@
                             <a href="https://purdue0-my.sharepoint.com/:p:/g/personal/yap12_purdue_edu/EVYuwU1IF55Ou7XZYlUjyRYBDFpcSPgXB3yPH3lfOfKQig?e=m20mMo" target="_blank">View Project Documentation</a>
                         </div>
                     </div>
+
+                    <div class="card">
+                        <div class="card-title">Registration System for NAMSA's 2026 Networking Dinner</div>
+                        <div class="card-subtitle">Event Systems | Figma, Firebase , MongoDB </div>
+                        <div class="card-content">
+                            <strong>Registration & Database System</strong>
+                            <br><br>
+                            Built the registration and guest database system for NAMSA's 2026 Networking Dinner, covering both the attendee-facing signup flow and the backend data store used to manage RSVPs and event-day check-in.
+                            <br><br>
+                            • * Developed a **registration and guest management system** using **Firebase and Figma**, streamlining event operations through a centralized platform.
+                            • * Integrated **real-time Firebase data retrieval and frontend updates**, enabling efficient access to guest names, table assignments, registration details, and refund status.                          
+                            • * Designed and implemented a **user-friendly interface** to improve the registration team's workflow and provide quick access to critical event information.                            
+                            • * Implemented **Single Sign-On (SSO)** to strengthen access control and protect sensitive **Personally Identifiable Information (PII)**.
+                            • * Applied **OWASP-aligned security practices** to minimize unnecessary exposure of sensitive data and improve overall system governance.  
+                            • * Contributed across the full project lifecycle, including **system architecture, UI/UX design, development, testing, and event-day support**.
+                            • *  Ensured the platform remained **responsive, reliable, and scalable** throughout the event to support smooth registration operations and post even data analysis
+
+                            <br><br>
+                           <a href="https://www.linkedin.com/posts/ilyssa-y-bb5a97282_i-had-the-opportunity-of-building-the-registration-ugcPost-7484497043713835008-6QqH/?utm_source=share&utm_medium=member_desktop&rcm=ACoAAETcJvkBOPs0dVCTt0qs6LMyg0VCVRrc0OM" target="_blank">View Project Documentation</a>                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -1195,6 +1231,28 @@
             <div class="section" id="breach">
                 <div class="section-header">BREACH RECORDS</div>
                 <div class="card expandable">
+                    <div class="card-title">Cybersecurity Intern (Penetration Testing)</div>
+                    <div class="card-subtitle">[COMPANY NAME] | [START DATE] - [END DATE]</div>
+                    <div class="card-content">
+                        • [EDIT: Add responsibility — e.g. conducted penetration testing engagements against web applications, networks, or internal systems]<br>
+                        • [EDIT: Add responsibility — e.g. performed vulnerability scanning and manual exploitation to identify security gaps]<br>
+                        • [EDIT: Add responsibility — e.g. documented findings and delivered remediation recommendations to stakeholders]
+                    </div>
+                    <div class="expand-content">
+                        <div class="expand-items">
+                            <div class="expand-item">
+                                <div class="expand-item-title">Tools & Methodologies</div>
+                                [EDIT: e.g. Kali Linux, Burp Suite, Nmap, Metasploit, OWASP Testing Guide]
+                            </div>
+                            <div class="expand-item">
+                                <div class="expand-item-title">Key Engagements</div>
+                                [EDIT: Add a short description of a notable pentest engagement or finding]
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card expandable" style="margin-top: 40px;">
                     <div class="card-title">Summer Security Intern</div>
                     <div class="card-subtitle">UG Overseas Education | Aug 2024 - Sep 2024</div>
                     <div class="card-content">
@@ -1215,20 +1273,36 @@
                                     
                                     <rect width="600" height="400" fill="url(#grid2)"/>
                                     
-                                    <path d="M 250 150 L 280 155 L 290 165 L 305 170 L 320 165 L 335 170 L 345 180 L 350 195 L 345 210 L 335 220 L 320 225 L 305 220 L 295 210 L 285 205 L 275 200 L 265 190 L 255 175 L 250 160 Z" 
-                                          fill="none" stroke="#ffffff" stroke-width="2">
+                                    <!-- Langkawi island -->
+                                    <circle cx="115" cy="128" r="2.5" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.7"/>
+                                    
+                                    <!-- Peninsular Malaysia (tilted NW-SE, as on the actual map) -->
+                                    <path d="M 165 130 L 185 140 L 200 165 L 195 190 L 208 210 L 200 235 L 212 260 L 205 285 L 218 310 L 210 335 L 222 355 L 235 370 L 245 378 L 232 372 L 218 358 L 205 340 L 195 315 L 180 295 L 172 270 L 160 245 L 155 220 L 145 195 L 150 170 L 155 150 Z" 
+                                          fill="none" stroke="#ffffff" stroke-width="2" stroke-linejoin="round">
                                         <animate attributeName="stroke-opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite"/>
+                                    </path>
+                                    
+                                    <!-- Sabah & Sarawak (East Malaysia, Borneo) -->
+                                    <path d="M 330 330 L 355 310 L 380 295 L 400 285 L 420 270 L 440 255 L 455 235 L 465 215 L 475 190 L 480 175 L 486 168 L 490 180 L 490 195 L 500 205 L 510 200 L 520 210 L 535 215 L 548 220 L 555 228 L 548 235 L 538 232 L 525 250 L 515 270 L 505 290 L 490 300 L 470 310 L 450 305 L 430 315 L 410 308 L 390 315 L 370 308 L 350 318 Z" 
+                                          fill="none" stroke="#ffffff" stroke-width="2" stroke-linejoin="round">
+                                        <animate attributeName="stroke-opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite" begin="0.3s"/>
                                     </path>
                                     
                                     <line class="scan-line" x1="0" y1="0" x2="600" y2="0" stroke="#ffffff" stroke-width="1" opacity="0.5"/>
                                     
-                                    <circle cx="300" cy="185" r="6" fill="#ff0000" opacity="0.8">
+                                    <circle cx="190" cy="250" r="6" fill="#ff0000" opacity="0.8">
                                         <animate attributeName="r" values="6;12;6" dur="1.5s" repeatCount="indefinite"/>
                                         <animate attributeName="opacity" values="0.8;0.2;0.8" dur="1.5s" repeatCount="indefinite"/>
                                     </circle>
                                     
-                                    <text x="300" y="250" font-family="Courier New" font-size="13" fill="#ffffff" text-anchor="middle" font-weight="600" letter-spacing="2">
+                                    <text x="200" y="112" font-family="Courier New" font-size="10" fill="#888888" text-anchor="middle" font-weight="600" letter-spacing="1.5">
+                                        PENINSULAR MALAYSIA
+                                    </text>
+                                    <text x="235" y="252" font-family="Courier New" font-size="12" fill="#ffffff" text-anchor="start" font-weight="600" letter-spacing="1.5">
                                         KUALA LUMPUR
+                                    </text>
+                                    <text x="440" y="345" font-family="Courier New" font-size="10" fill="#888888" text-anchor="middle" font-weight="600" letter-spacing="1.5">
+                                        SABAH &amp; SARAWAK
                                     </text>
                                 </svg>
                             </div>
@@ -1267,30 +1341,6 @@
                                     • Performed a Man-in-the-Middle attack in LabShock to read and write coils, validating detection telemetry and response workflows.<br>
                                     • Co-led and coordinated a team collaboration between CYNICS and Purdue Polytechnic’s Engineering Technology department. Maintaining a positive collaboration. <br>
 
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card expandable">
-                        <div class="card-title">Real-Time Voice Deepfake Detection</div>
-                        <div class="card-subtitle">Independent Research | Ongoing</div>
-                        <div class="card-content">
-                            Developing detection methodologies for real-time voice deepfakes using OSINT techniques and acoustic wavelength analysis.
-                        </div>
-                        <div class="expand-content">
-                            <div class="expand-items">
-                                <div class="expand-item">
-                                    <div class="expand-item-title">Research Objective</div>
-                                    Creating open-source detection framework to combat voice-based social engineering attacks and misinformation campaigns
-                                </div>
-                                <div class="expand-item">
-                                    <div class="expand-item-title">Technical Implementation</div>
-                                    • Building custom Python web scraping tool to systematically collect and catalog deepfake voice services advertised on Telegram, GitHub, and other platforms<br>
-                                    • Multi-language data collection across English, Chinese, and Russian sources to understand global deepfake service landscape<br>
-                                    • Conducting extensive literature review on emerging threats posed by voice synthesis technology<br>
-                                    • Analyzing acoustic patterns and wavelength signatures to identify synthetic voice characteristics<br>
-                                    • Developing threat intelligence database of commercially available deepfake services
                                 </div>
                             </div>
                         </div>
